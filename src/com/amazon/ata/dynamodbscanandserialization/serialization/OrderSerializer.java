@@ -2,6 +2,8 @@ package com.amazon.ata.dynamodbscanandserialization.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+
 /**
  * Handles the serialization and deserialization of Order object.
  */
@@ -14,9 +16,12 @@ public class OrderSerializer {
      * @return an Order object instantiated by the json provided
      * @throws OrderSerializationException if the provided JSON cannot be deserialized to an Order object
      */
-    public static Order toOrder(String json) {
-        // TODO: implement
-        return null;
+    public static Order toOrder(String json)  {
+        try {
+            return MAPPER.readValue(json, Order.class);
+        }catch (IOException ex) {
+            throw new OrderSerializationException("JSON cannot be deserialized to an Order object", ex.getCause());
+        }
     }
 
     /**
@@ -26,7 +31,11 @@ public class OrderSerializer {
      * @throws OrderSerializationException if the order cannot be written to JSON
      */
     public static String toJSON(Order order) {
-        // TODO: implement
-        return null;
+        try {
+            return MAPPER.writeValueAsString(order);
+        }catch (IOException ex){
+            throw new OrderSerializationException("cannot be written to JSON", ex.getCause());
+
+        }
     }
 }
